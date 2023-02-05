@@ -14,10 +14,22 @@
 
 package gocmder
 
-const (
-	shortDesc    = "short"
-	longDesc     = "long"
-	defaultValue = "default"
-	isHidden     = "hidden"
-	isRequired   = "required"
-)
+type CmderOption func(*Cmder)
+
+func WithShortDesc(short string) CmderOption {
+	return func(c *Cmder) {
+		c.shortDesc = short
+	}
+}
+
+func WithLongDesc(long string) CmderOption {
+	return func(c *Cmder) {
+		c.longDesc = long
+	}
+}
+
+func WithVersion(version string) CmderOption {
+	return func(c *Cmder) {
+		c.version = version
+	}
+}

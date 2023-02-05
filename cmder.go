@@ -19,8 +19,56 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Cmder interface {
-	Run() error
-	CobraCmd() *cobra.Command
-	ViperCfg() *viper.Viper
+type Cmder struct {
+	cfg any
+	cobra *cobra.Command
+	viper *viper.Viper
+	longDesc string
+	shortDesc string
+	version string
 }
+
+type OnFinalizeFunc func(cfg any) error
+
+func NewCmder(cfg any, onFinalize OnFinalizeFunc, opts ...CmderOption) *Cmder {
+	c := &Cmder{
+		cfg: cfg,		
+		viper: viper.New(),
+	}
+
+	for _, opt := range opts {
+		opt(c)
+	}
+	
+	c.cobra = &cobra.Command{
+		Short: c.shortDesc,
+		Long: c.longDesc,
+		Version: c.version,
+		RunE: c.run(),
+	}
+
+	cobra.OnFinalize(func() {
+		onFinalize(c.cfg)
+	})
+
+	return c
+}
+
+func (c *Cmder) Cobra() *cobra.Command {
+	return c.cobra
+}
+
+func (c *Cmder) Viper() *viper.Viper {
+	return c.viper
+}
+
+func (c *Cmder) Execute() error {
+	return c.cobra.Execute()
+}
+
+func (c *Cmder) run() func (cmd *cobra.Command, _ []string) error {
+	return func (cmd *cobra.Command, _ []string) error {
+		return cmd.Help()
+	}
+}
+
