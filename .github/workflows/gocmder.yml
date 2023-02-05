@@ -1,0 +1,25 @@
+name: Go Cmder
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - "README.md"
+      - ".gitignore"
+      - "LICENCE"
+
+jobs:
+  build:
+    run-on: ubuntu-lastest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.19.0'
+        run: go version
+      
+      - name: Unit tests
+        run: go test ./...

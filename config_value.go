@@ -45,6 +45,10 @@ func newConfigValue(name string, sf reflect.StructField) configValue {
 		defaultValue, _ = strconv.Atoi(defaultValue.(string))
 	}
 
+	if kind == reflect.Bool {
+		defaultValue, _ = strconv.ParseBool(defaultValue.(string))
+	}
+
 	isHidden, _ := strconv.ParseBool(sf.Tag.Get(isHiddenKey))
 	isRequired, _ := strconv.ParseBool(sf.Tag.Get(isRequiredKey))
 	
@@ -64,15 +68,15 @@ func createConfigValues(cfg any) []configValue {
 	return configValues	
 }
 
-func recursivelyExtractConfigValues(obj any, prefix string, cfgValues *[]configValue) {
-	objType := reflect.TypeOf(obj)
+func recursivelyExtractConfigValues(cfg any, prefix string, cfgValues *[]configValue) {
+	cfgType := reflect.TypeOf(cfg)
 
-	if objType.Name() == "StructField" {
-		sf := obj.(reflect.StructField)
-		objType = sf.Type
+	if cfgType.Name() == "StructField" {
+		sf := cfg.(reflect.StructField)
+		cfgType = sf.Type
 	}
 
-	for _, vf := range reflect.VisibleFields(objType) {		
+	for _, vf := range reflect.VisibleFields(cfgType) {		
 		name := strings.ToLower(vf.Name)
 
 		if vf.Type.Kind() == reflect.Struct {

@@ -15,10 +15,95 @@
 package gocmder
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 )
+
+type configValueTestSuite struct {
+	suite.Suite
+}
+
+func (s *configValueTestSuite) TestCreateConfigValues() {
+	cfgs := createConfigValues(configTest{})
+
+	s.Equal(8, len(cfgs))
+
+	s.ElementsMatch(
+		[]configValue{
+			{
+				name:         "foo",
+				kind:         reflect.String,
+				desc:         "foo",
+				defaultValue: any("foo"),
+				isHidden:     false,
+				isRequired:   true,
+			},
+			{
+				name:         "bar",
+				kind:         reflect.String,
+				desc:         "bar",
+				defaultValue: any("bar"),
+				isHidden:     true,
+				isRequired:   false,
+			},
+			{
+				name:         "sc.foostring",
+				kind:         reflect.String,
+				desc:         "foostring",
+				defaultValue: any("foostring"),
+				isHidden:     false,
+				isRequired:   true,
+			},
+			{
+				name:         "sc.barstring",
+				kind:         reflect.String,
+				desc:         "barstring",
+				defaultValue: any("barstring"),
+				isHidden:     true,
+				isRequired:   false,
+			},
+			{
+				name:         "sc.ic.fooint",
+				kind:         reflect.Int,
+				desc:         "fooint",
+				defaultValue: any(1),
+				isHidden:     false,
+				isRequired:   true,
+			},
+			{
+				name:         "sc.ic.barint",
+				kind:         reflect.Int,
+				desc:         "barint",
+				defaultValue: any(2),
+				isHidden:     true,
+				isRequired:   false,
+			},
+			{
+				name:         "sc.ic.bc.foobool",
+				kind:         reflect.Bool,
+				desc:         "foobool",
+				defaultValue: any(true),
+				isHidden:     false,
+				isRequired:   true,
+			},
+			{
+				name:         "sc.ic.bc.barbool",
+				kind:         reflect.Bool,
+				desc:         "barbool",
+				defaultValue: any(false),
+				isHidden:     true,
+				isRequired:   false,
+			},
+		},
+		cfgs,
+	)
+}
+
+func TestConfigValueTestSuite(t *testing.T) {
+	suite.Run(t, new(configValueTestSuite))
+}
 
 type configTest struct {
 	foo string `desc:"foo" default:"foo" required:"true" hidden:"false"`
@@ -41,19 +126,4 @@ type intConfigTest struct {
 type boolConfigTest struct {
 	foobool bool `desc:"foobool" default:"true" required:"true" hidden:"false"`
 	barbool bool `desc:"barbool" default:"false" required:"false" hidden:"true"`
-}
-
-type configValueTestSuite struct {
-	suite.Suite
-}
-
-func (s *configValueTestSuite) TestConfigValue() {
-	cfgs := make([]configValue, 0)
-	recursivelyExtractConfigValues(configTest{}, "", &cfgs)
-
-	s.Equal(8, len(cfgs))
-}
-
-func TestConfigValueTestSuite(t *testing.T) {
-	suite.Run(t, new(configValueTestSuite))
 }
