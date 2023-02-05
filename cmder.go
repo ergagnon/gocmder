@@ -20,31 +20,31 @@ import (
 )
 
 type Cmder struct {
-	cfg any
-	cobra *cobra.Command
-	viper *viper.Viper
-	longDesc string
+	cfg       any
+	cobra     *cobra.Command
+	viper     *viper.Viper
+	longDesc  string
 	shortDesc string
-	version string
+	version   string
 }
 
 type OnFinalizeFunc func(cfg any) error
 
 func NewCmder(cfg any, onFinalize OnFinalizeFunc, opts ...CmderOption) *Cmder {
 	c := &Cmder{
-		cfg: cfg,		
+		cfg:   cfg,
 		viper: viper.New(),
 	}
 
 	for _, opt := range opts {
 		opt(c)
 	}
-	
+
 	c.cobra = &cobra.Command{
-		Short: c.shortDesc,
-		Long: c.longDesc,
+		Short:   c.shortDesc,
+		Long:    c.longDesc,
 		Version: c.version,
-		RunE: c.run(),
+		RunE:    c.run(),
 	}
 
 	cobra.OnFinalize(func() {
@@ -66,8 +66,8 @@ func (c *Cmder) Execute() error {
 	return c.cobra.Execute()
 }
 
-func (c *Cmder) run() func (cmd *cobra.Command, _ []string) error {
-	return func (cmd *cobra.Command, _ []string) error {
+func (c *Cmder) run() func(cmd *cobra.Command, _ []string) error {
+	return func(cmd *cobra.Command, _ []string) error {
 		return cmd.Help()
 	}
 }

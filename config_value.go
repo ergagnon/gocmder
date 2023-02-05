@@ -21,19 +21,19 @@ import (
 )
 
 const (
-	descKey     = "desc"
+	descKey         = "desc"
 	defaultValueKey = "default"
 	isHiddenKey     = "hidden"
 	isRequiredKey   = "required"
 )
 
 type configValue struct {
-	name 	  string
-	kind reflect.Kind
-	desc 	  string
+	name         string
+	kind         reflect.Kind
+	desc         string
 	defaultValue any
-	isHidden bool
-	isRequired bool
+	isHidden     bool
+	isRequired   bool
 }
 
 func newConfigValue(name string, sf reflect.StructField) configValue {
@@ -51,21 +51,21 @@ func newConfigValue(name string, sf reflect.StructField) configValue {
 
 	isHidden, _ := strconv.ParseBool(sf.Tag.Get(isHiddenKey))
 	isRequired, _ := strconv.ParseBool(sf.Tag.Get(isRequiredKey))
-	
+
 	return configValue{
-		name: name,
-		kind: kind,
-		desc: sf.Tag.Get(descKey),	
+		name:         name,
+		kind:         kind,
+		desc:         sf.Tag.Get(descKey),
 		defaultValue: defaultValue,
-		isHidden: isHidden,
-		isRequired: isRequired,
+		isHidden:     isHidden,
+		isRequired:   isRequired,
 	}
 }
 
 func createConfigValues(cfg any) []configValue {
 	configValues := make([]configValue, 0)
 	recursivelyExtractConfigValues(cfg, "", &configValues)
-	return configValues	
+	return configValues
 }
 
 func recursivelyExtractConfigValues(cfg any, prefix string, cfgValues *[]configValue) {
@@ -76,13 +76,13 @@ func recursivelyExtractConfigValues(cfg any, prefix string, cfgValues *[]configV
 		cfgType = sf.Type
 	}
 
-	for _, vf := range reflect.VisibleFields(cfgType) {		
+	for _, vf := range reflect.VisibleFields(cfgType) {
 		name := strings.ToLower(vf.Name)
 
 		if vf.Type.Kind() == reflect.Struct {
-			recursivelyExtractConfigValues(vf, prefix + name + ".", cfgValues)
+			recursivelyExtractConfigValues(vf, prefix+name+".", cfgValues)
 		} else {
-			*cfgValues = append(*cfgValues, newConfigValue(prefix + name, vf))
+			*cfgValues = append(*cfgValues, newConfigValue(prefix+name, vf))
 		}
-	}	
+	}
 }
