@@ -104,6 +104,8 @@ func (c *Cmder) addCliFlag(item configItem) error {
 		c.cobra.Flags().Bool(item.name, item.defaultValue.(bool), item.desc)
 	case reflect.Int:
 		c.cobra.Flags().Int(item.name, item.defaultValue.(int), item.desc)
+	case reflect.Float32:
+		c.cobra.Flags().Float32(item.name, item.defaultValue.(float32), item.desc)
 	default:
 		return fmt.Errorf("unsupported type %s", item.kind)
 	}
@@ -123,6 +125,8 @@ func (c *Cmder) setDefaultConfigValue(item configItem) error {
 		c.viper.SetDefault(item.name, item.defaultValue.(bool))
 	case reflect.Int:
 		c.viper.SetDefault(item.name, item.defaultValue.(int))
+	case reflect.Float32:
+		c.viper.SetDefault(item.name, item.defaultValue.(float32))
 	default:
 		return fmt.Errorf("unsupported type %s", item.kind)
 	}

@@ -101,8 +101,26 @@ func (s *configItemTestSuite) TestCreateConfigItems() {
 	)
 }
 
+func (s *configItemTestSuite) TestCreateConfigItemsWithFloat() {
+	cfgs := createConfigItems(floatConfigTest{})
+	s.Equal(1, len(cfgs))
+
+	item := cfgs[0]
+
+	s.Equal("foofloat", item.name)
+	s.Equal(reflect.Float32, item.kind)
+	s.Equal("foofloat", item.desc)
+	s.False(item.isRequired)
+	s.False(item.isHidden)
+	s.InDelta(float32(1.23), item.defaultValue, 0.0001)
+}
+
 func TestConfigItemTestSuite(t *testing.T) {
 	suite.Run(t, new(configItemTestSuite))
+}
+
+type floatConfigTest struct {
+	foofloat float32 `desc:"foofloat" default:"1.23"`
 }
 
 type configTest struct {

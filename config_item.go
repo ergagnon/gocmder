@@ -49,6 +49,10 @@ func newConfigItem(name string, sf reflect.StructField) configItem {
 		defaultValue, _ = strconv.ParseBool(defaultValue.(string))
 	}
 
+	if kind == reflect.Float32 {
+		defaultValue, _ = strconv.ParseFloat(defaultValue.(string), 32)
+	}
+
 	isHidden, _ := strconv.ParseBool(sf.Tag.Get(isHiddenKey))
 	isRequired, _ := strconv.ParseBool(sf.Tag.Get(isRequiredKey))
 
