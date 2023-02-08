@@ -74,12 +74,12 @@ func (c *Cmder) Execute() error {
 }
 
 func (c *Cmder) init(items []configItem) error {
-	
+
 	for _, item := range items {
 		if err := c.addCliFlag(item); err != nil {
 			return err
 		}
-		
+
 		if err := c.setDefaultConfigValue(item); err != nil {
 			return err
 		}
@@ -88,7 +88,7 @@ func (c *Cmder) init(items []configItem) error {
 			return err
 		}
 	}
-	
+
 	return nil
 }
 
@@ -96,7 +96,7 @@ func (c *Cmder) addCliFlag(item configItem) error {
 	if item.isHidden {
 		return nil
 	}
-	
+
 	switch item.kind {
 	case reflect.String:
 		c.cobra.Flags().String(item.name, item.defaultValue.(string), item.desc)
@@ -109,11 +109,11 @@ func (c *Cmder) addCliFlag(item configItem) error {
 	default:
 		return fmt.Errorf("unsupported type %s", item.kind)
 	}
-	
+
 	if item.isRequired {
 		c.cobra.MarkFlagRequired(item.name)
 	}
-	
+
 	return nil
 }
 
@@ -138,7 +138,7 @@ func (c *Cmder) connectViperAndCobra(item configItem) error {
 	if item.isHidden {
 		return nil
 	}
-	
+
 	if err := c.viper.BindPFlag(item.name, c.cobra.Flags().Lookup(toFlagName(item.name))); err != nil {
 		return err
 	}
@@ -157,7 +157,7 @@ func toFlagName(name string) string {
 func toEnvName(prefix, name string) string {
 	if prefix != "" {
 		name = prefix + "_" + name
-	} 
+	}
 
 	return strings.ToUpper(strings.Replace(name, ".", "_", -1))
 }
@@ -175,6 +175,6 @@ func (c *Cmder) run() func(cmd *cobra.Command, _ []string) error {
 			return err
 		}
 
-		return nil 
+		return nil
 	}
 }
