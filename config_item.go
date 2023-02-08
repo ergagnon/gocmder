@@ -27,7 +27,7 @@ const (
 	isRequiredKey   = "required"
 )
 
-type configValue struct {
+type configItem struct {
 	name         string
 	kind         reflect.Kind
 	desc         string
@@ -36,7 +36,7 @@ type configValue struct {
 	isRequired   bool
 }
 
-func newConfigValue(name string, sf reflect.StructField) configValue {
+func newConfigItem(name string, sf reflect.StructField) configItem {
 	var defaultValue any = sf.Tag.Get(defaultValueKey)
 
 	kind := sf.Type.Kind()
@@ -52,7 +52,7 @@ func newConfigValue(name string, sf reflect.StructField) configValue {
 	isHidden, _ := strconv.ParseBool(sf.Tag.Get(isHiddenKey))
 	isRequired, _ := strconv.ParseBool(sf.Tag.Get(isRequiredKey))
 
-	return configValue{
+	return configItem{
 		name:         name,
 		kind:         kind,
 		desc:         sf.Tag.Get(descKey),
@@ -62,13 +62,13 @@ func newConfigValue(name string, sf reflect.StructField) configValue {
 	}
 }
 
-func createConfigValues(cfg any) []configValue {
-	configValues := make([]configValue, 0)
-	recursivelyExtractConfigValues(cfg, "", &configValues)
-	return configValues
+func createConfigItems(cfg any) []configItem {
+	configItems := make([]configItem, 0)
+	recursivelyExtractConfigItems(cfg, "", &configItems)
+	return configItems
 }
 
-func recursivelyExtractConfigValues(cfg any, prefix string, cfgValues *[]configValue) {
+func recursivelyExtractConfigItems(cfg any, prefix string, cfgItems *[]configItem) {
 	cfgType := reflect.TypeOf(cfg)
 
 	if cfgType.Name() == "StructField" {
@@ -80,9 +80,9 @@ func recursivelyExtractConfigValues(cfg any, prefix string, cfgValues *[]configV
 		name := strings.ToLower(vf.Name)
 
 		if vf.Type.Kind() == reflect.Struct {
-			recursivelyExtractConfigValues(vf, prefix+name+".", cfgValues)
+			recursivelyExtractConfigItems(vf, prefix+name+".", cfgItems)
 		} else {
-			*cfgValues = append(*cfgValues, newConfigValue(prefix+name, vf))
+			*cfgItems = append(*cfgItems, newConfigItem(prefix+name, vf))
 		}
 	}
 }

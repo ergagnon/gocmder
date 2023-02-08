@@ -17,6 +17,7 @@ package gocmder
 import (
 	"testing"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -43,6 +44,14 @@ func (s *optionsTestSuite) TestWithShortDescription() {
 	WithShortDesc("short description")(&cmd)
 
 	s.Equal("short description", cmd.shortDesc)
+}
+
+func (s *optionsTestSuite) TestWithPrefix() {
+	cmd := Cmder{}
+	cmd.viper = viper.New()
+	WithPrefix("APP")(&cmd)
+
+	s.Equal("APP", cmd.envPrefix)
 }
 
 func TestOptionsTestSuite(t *testing.T) {

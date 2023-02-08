@@ -46,5 +46,6 @@ func WithVersion(version string) CmderOption {
 func WithPrefix(prefix string) CmderOption {
 	return func(c *Cmder) {
 		c.viper.SetEnvPrefix(prefix)
+		c.envPrefix = prefix
 	}
 }

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package gocmder
 
 import (
@@ -27,6 +26,7 @@ type Cmder struct {
 	longDesc  string
 	shortDesc string
 	version   string
+	envPrefix string
 }
 
 type OnFinalizeFunc func(cfg any) error

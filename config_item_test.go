@@ -21,17 +21,17 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type configValueTestSuite struct {
+type configItemTestSuite struct {
 	suite.Suite
 }
 
-func (s *configValueTestSuite) TestCreateConfigValues() {
-	cfgs := createConfigValues(configTest{})
+func (s *configItemTestSuite) TestCreateConfigItems() {
+	cfgs := createConfigItems(configTest{})
 
 	s.Equal(8, len(cfgs))
 
 	s.ElementsMatch(
-		[]configValue{
+		[]configItem{
 			{
 				name:         "foo",
 				kind:         reflect.String,
@@ -101,8 +101,8 @@ func (s *configValueTestSuite) TestCreateConfigValues() {
 	)
 }
 
-func TestConfigValueTestSuite(t *testing.T) {
-	suite.Run(t, new(configValueTestSuite))
+func TestConfigItemTestSuite(t *testing.T) {
+	suite.Run(t, new(configItemTestSuite))
 }
 
 type configTest struct {
