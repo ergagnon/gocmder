@@ -14,6 +14,8 @@
 
 package gocmder
 
+import "github.com/spf13/afero"
+
 type CmderOption func(*Cmder)
 
 // WithShortDesc sets the short description for the command.
@@ -47,5 +49,13 @@ func WithPrefix(prefix string) CmderOption {
 	return func(c *Cmder) {
 		c.viper.SetEnvPrefix(prefix)
 		c.envPrefix = prefix
+	}
+}
+
+// WithFS sets the filesystem to use for the command.
+// This is useful for testing.
+func WithFS(fs afero.Fs) CmderOption {
+	return func(c *Cmder) {
+		c.viper.SetFs(fs)
 	}
 }
