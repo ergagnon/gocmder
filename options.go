@@ -52,10 +52,18 @@ func WithPrefix(prefix string) CmderOption {
 	}
 }
 
+// WithConfigFile sets the config file to use for the command.
+// explicitly defines the path, name and extension of the config file.
+func WithConfigFile(file string) CmderOption {
+	return func(c *Cmder) {
+		c.Viper().SetConfigFile(file)
+	}
+}
+
 // WithFS sets the filesystem to use for the command.
 // This is useful for testing.
 func WithFS(fs afero.Fs) CmderOption {
 	return func(c *Cmder) {
-		c.viper.SetFs(fs)
+		c.Viper().SetFs(fs)
 	}
 }
