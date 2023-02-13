@@ -28,41 +28,46 @@ const (
 )
 
 type configItem struct {
-	name         string
-	kind         reflect.Kind
-	desc         string
-	defaultValue any
-	isHidden     bool
-	isRequired   bool
+	name            string
+	kind            reflect.Kind
+	desc            string
+	defaultValue    any
+	hasDefaultValue bool
+	isHidden        bool
+	isRequired      bool
 }
 
 func newConfigItem(name string, sf reflect.StructField) configItem {
-	var defaultValue any = sf.Tag.Get(defaultValueKey)
+	value, hasDefault := sf.Tag.Lookup(defaultValueKey)
 
 	kind := sf.Type.Kind()
 
+	var defaultValue any = value
+
 	if kind == reflect.Int {
-		defaultValue, _ = strconv.Atoi(defaultValue.(string))
+		defaultValue, _ = strconv.Atoi(value)
 	}
 
 	if kind == reflect.Bool {
-		defaultValue, _ = strconv.ParseBool(defaultValue.(string))
+		defaultValue, _ = strconv.ParseBool(value)
 	}
 
 	if kind == reflect.Float32 {
-		defaultValue, _ = strconv.ParseFloat(defaultValue.(string), 32)
+		defaultValue, _ = strconv.ParseFloat(value, 32)
+		defaultValue = float32(defaultValue.(float64))
 	}
 
 	isHidden, _ := strconv.ParseBool(sf.Tag.Get(isHiddenKey))
 	isRequired, _ := strconv.ParseBool(sf.Tag.Get(isRequiredKey))
 
 	return configItem{
-		name:         name,
-		kind:         kind,
-		desc:         sf.Tag.Get(descKey),
-		defaultValue: defaultValue,
-		isHidden:     isHidden,
-		isRequired:   isRequired,
+		name:            name,
+		kind:            kind,
+		desc:            sf.Tag.Get(descKey),
+		defaultValue:    defaultValue,
+		hasDefaultValue: hasDefault,
+		isHidden:        isHidden,
+		isRequired:      isRequired,
 	}
 }
 
