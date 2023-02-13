@@ -33,68 +33,76 @@ func (s *configItemTestSuite) TestCreateConfigItems() {
 	s.ElementsMatch(
 		[]configItem{
 			{
-				name:         "foo",
-				kind:         reflect.String,
-				desc:         "foo",
-				defaultValue: any("foo"),
-				isHidden:     false,
-				isRequired:   true,
+				name:            "foo",
+				kind:            reflect.String,
+				desc:            "foo",
+				defaultValue:    any("foo"),
+				hasDefaultValue: true,
+				isHidden:        false,
+				isRequired:      true,
 			},
 			{
-				name:         "bar",
-				kind:         reflect.String,
-				desc:         "bar",
-				defaultValue: any("bar"),
-				isHidden:     true,
-				isRequired:   false,
+				name:            "bar",
+				kind:            reflect.String,
+				desc:            "bar",
+				defaultValue:    any("bar"),
+				hasDefaultValue: true,
+				isHidden:        true,
+				isRequired:      false,
 			},
 			{
-				name:         "sc.foostring",
-				kind:         reflect.String,
-				desc:         "foostring",
-				defaultValue: any("foostring"),
-				isHidden:     false,
-				isRequired:   true,
+				name:            "sc.foostring",
+				kind:            reflect.String,
+				desc:            "foostring",
+				defaultValue:    any("foostring"),
+				hasDefaultValue: true,
+				isHidden:        false,
+				isRequired:      true,
 			},
 			{
-				name:         "sc.barstring",
-				kind:         reflect.String,
-				desc:         "barstring",
-				defaultValue: any("barstring"),
-				isHidden:     true,
-				isRequired:   false,
+				name:            "sc.barstring",
+				kind:            reflect.String,
+				desc:            "barstring",
+				defaultValue:    any(""),
+				hasDefaultValue: false,
+				isHidden:        true,
+				isRequired:      false,
 			},
 			{
-				name:         "sc.ic.fooint",
-				kind:         reflect.Int,
-				desc:         "fooint",
-				defaultValue: any(1),
-				isHidden:     false,
-				isRequired:   true,
+				name:            "sc.ic.fooint",
+				kind:            reflect.Int,
+				desc:            "fooint",
+				defaultValue:    any(1),
+				hasDefaultValue: true,
+				isHidden:        false,
+				isRequired:      true,
 			},
 			{
-				name:         "sc.ic.barint",
-				kind:         reflect.Int,
-				desc:         "barint",
-				defaultValue: any(2),
-				isHidden:     true,
-				isRequired:   false,
+				name:            "sc.ic.barint",
+				kind:            reflect.Int,
+				desc:            "barint",
+				defaultValue:    any(0),
+				hasDefaultValue: false,
+				isHidden:        true,
+				isRequired:      false,
 			},
 			{
-				name:         "sc.ic.bc.foobool",
-				kind:         reflect.Bool,
-				desc:         "foobool",
-				defaultValue: any(true),
-				isHidden:     false,
-				isRequired:   true,
+				name:            "sc.ic.bc.foobool",
+				kind:            reflect.Bool,
+				desc:            "foobool",
+				defaultValue:    any(true),
+				hasDefaultValue: true,
+				isHidden:        false,
+				isRequired:      true,
 			},
 			{
-				name:         "sc.ic.bc.barbool",
-				kind:         reflect.Bool,
-				desc:         "barbool",
-				defaultValue: any(false),
-				isHidden:     true,
-				isRequired:   false,
+				name:            "sc.ic.bc.barbool",
+				kind:            reflect.Bool,
+				desc:            "barbool",
+				defaultValue:    any(false),
+				hasDefaultValue: false,
+				isHidden:        true,
+				isRequired:      false,
 			},
 		},
 		cfgs,
@@ -113,6 +121,7 @@ func (s *configItemTestSuite) TestCreateConfigItemsWithFloat() {
 	s.False(item.isRequired)
 	s.False(item.isHidden)
 	s.InDelta(float32(1.23), item.defaultValue, 0.0001)
+	s.True(item.hasDefaultValue)
 }
 
 func TestConfigItemTestSuite(t *testing.T) {
@@ -131,17 +140,17 @@ type configTest struct {
 
 type stringConfigTest struct {
 	foostring string `desc:"foostring" default:"foostring" required:"true" hidden:"false"`
-	barstring string `desc:"barstring" default:"barstring" required:"false" hidden:"true"`
+	barstring string `desc:"barstring" required:"false" hidden:"true"`
 	ic        intConfigTest
 }
 
 type intConfigTest struct {
 	fooint int `desc:"fooint" default:"1" required:"true" hidden:"false"`
-	barint int `desc:"barint" default:"2" required:"false" hidden:"true"`
+	barint int `desc:"barint" required:"false" hidden:"true"`
 	bc     boolConfigTest
 }
 
 type boolConfigTest struct {
 	foobool bool `desc:"foobool" default:"true" required:"true" hidden:"false"`
-	barbool bool `desc:"barbool" default:"false" required:"false" hidden:"true"`
+	barbool bool `desc:"barbool" required:"false" hidden:"true"`
 }
