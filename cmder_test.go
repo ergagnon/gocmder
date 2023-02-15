@@ -30,9 +30,7 @@ type cmderTestSuite struct {
 }
 
 func (s *cmderTestSuite) TestNewCmder() {
-	cmder, err := NewCmder(rootConfig{}, func(cfg any) error {
-		return nil
-	})
+	cmder, err := NewCmder(rootConfig{}, func(cfg any) {})
 
 	s.NoError(err)
 
@@ -45,9 +43,7 @@ func (s *cmderTestSuite) TestNewCmder() {
 }
 
 func (s *cmderTestSuite) TestNewCmderWithoutRequiredArgs() {
-	cmder, err := NewCmder(rootConfig{}, func(cfg any) error {
-		return nil
-	})
+	cmder, err := NewCmder(rootConfig{}, func(cfg any) {})
 
 	s.NoError(err)
 
@@ -60,9 +56,7 @@ func (s *cmderTestSuite) TestNewCmderWithoutRequiredArgs() {
 }
 
 func (s *cmderTestSuite) TestNewCmderWithInvalidArgs() {
-	cmder, err := NewCmder(rootConfig{}, func(cfg any) error {
-		return nil
-	})
+	cmder, err := NewCmder(rootConfig{}, func(cfg any) {})
 
 	s.NoError(err)
 
@@ -75,15 +69,13 @@ func (s *cmderTestSuite) TestNewCmderWithInvalidArgs() {
 }
 
 func (s *cmderTestSuite) TestNewCmderValidArgs() {
-	cmder, err := NewCmder(rootConfig{}, func(cfg any) error {
+	cmder, err := NewCmder(rootConfig{}, func(cfg any) {
 		c := cfg.(rootConfig)
 		s.Equal("im a foo", c.Foo)
 		s.Equal(2, c.Bar)
 		s.Equal(float32(1.2), c.Child.Decimal)
 		s.Equal(true, c.Child.Boolean)
 		s.Equal("hide and seek", c.Child.Hidden)
-
-		return nil
 	})
 
 	s.NoError(err)
@@ -97,9 +89,7 @@ func (s *cmderTestSuite) TestNewCmderValidArgs() {
 }
 
 func (s *cmderTestSuite) TestNewCmderWithVersionOptions() {
-	cmder, err := NewCmder(rootConfig{}, func(cfg any) error {
-		return nil
-	}, WithVersion("1.2.3"))
+	cmder, err := NewCmder(rootConfig{}, func(cfg any) {}, WithVersion("1.2.3"))
 
 	s.NoError(err)
 
@@ -115,7 +105,7 @@ func (s *cmderTestSuite) TestNewCmderWithVersionOptions() {
 
 func (s *cmderTestSuite) TestNewCmderWithEnvVariable_OverrideDefaultValue() {
 	onfinalizeCalled := false
-	cmder, err := NewCmder(rootConfig{}, func(cfg any) error {
+	cmder, err := NewCmder(rootConfig{}, func(cfg any) {
 		c := cfg.(rootConfig)
 		s.Equal("im a foo", c.Foo)
 		s.Equal(3, c.Bar)
@@ -123,7 +113,6 @@ func (s *cmderTestSuite) TestNewCmderWithEnvVariable_OverrideDefaultValue() {
 		s.Equal(false, c.Child.Boolean)
 		s.Equal("i found you", c.Child.Hidden)
 		onfinalizeCalled = true
-		return nil
 	}, WithPrefix("TEST"))
 
 	s.NoError(err)
@@ -167,7 +156,7 @@ child:
 	s.NoError(err)
 
 	onfinalizeCalled := false
-	cmder, err := NewCmder(rootConfig{}, func(cfg any) error {
+	cmder, err := NewCmder(rootConfig{}, func(cfg any) {
 		c := cfg.(rootConfig)
 		s.Equal("im a foo", c.Foo)
 		s.Equal(3, c.Bar)
@@ -175,7 +164,6 @@ child:
 		s.Equal(false, c.Child.Boolean)
 		s.Equal("i found you", c.Child.Hidden)
 		onfinalizeCalled = true
-		return nil
 	}, WithFS(fs), WithConfigFile(filepath.Join(dir, "config.yaml")))
 
 	s.NoError(err)

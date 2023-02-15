@@ -33,8 +33,10 @@ type Cmder struct {
 	envPrefix string
 }
 
-type OnFinalizeFunc func(cfg any) error
+type OnFinalizeFunc func(cfg any)
 
+// NewCmder creates a new Cmder instance. It takes a config struct, a callback function
+// when the command is finalized and a variadic list of options.
 func NewCmder(cfg any, onFinalize OnFinalizeFunc, opts ...CmderOption) (*Cmder, error) {
 	c := &Cmder{
 		cfg:   cfg,
@@ -64,14 +66,17 @@ func NewCmder(cfg any, onFinalize OnFinalizeFunc, opts ...CmderOption) (*Cmder, 
 	return c, nil
 }
 
+// Returns the Cobra instance.
 func (c *Cmder) Cobra() *cobra.Command {
 	return c.cobra
 }
 
+// Returns the Viper instance.
 func (c *Cmder) Viper() *viper.Viper {
 	return c.viper
 }
 
+// Executes the command.
 func (c *Cmder) Execute() error {
 	return c.cobra.Execute()
 }
